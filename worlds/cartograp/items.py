@@ -3,6 +3,7 @@ Items
 """
 import dataclasses
 import enum
+from math import ceil
 from typing import ClassVar, Self
 
 from BaseClasses import Item, ItemClassification
@@ -13,6 +14,7 @@ from .world_base import CartogrAPWorldBase
 
 class CartogrAPItem(Item):
     game: str = GAME_NAME
+
 
 @dataclasses.dataclass(frozen=True)
 class ItemData:
@@ -25,7 +27,7 @@ class ItemData:
 def get_item_with_right_classification(world: CartogrAPWorldBase, item_name: str) -> CartogrAPItem:
     """returns the item when provided the name"""
     filtered_item_list: list[CartogrAPItems] = [item for item in CartogrAPItems if item.item_name == item_name]
-    print(f"item_name: {item_name}")
+    # print(f"item_name: {item_name}")
     return CartogrAPItem(name=filtered_item_list[0].item_name, code=filtered_item_list[0].code, classification=filtered_item_list[0].classification, player=world.player)
 
 
@@ -73,15 +75,15 @@ def create_items(world: CartogrAPWorldBase) -> None:
                     world.multiworld.itempool.append(world.create_item(name=item.item_name))
                     total_location_count -= 1
             elif item.item_name == PLAIN_CELL_ITEM_NAME:
-                for _ in range(world.plain_cell_count - STARTING_CELLS_REVEALED):
+                for _ in range(ceil((world.plain_cell_count - STARTING_CELLS_REVEALED) / CELL_ITEM_UNLOCKS)):
                     world.multiworld.itempool.append(world.create_item(name=item.item_name))
                     total_location_count -= 1
             else:
-                for _ in range(world.other_cell_type_count):
+                for _ in range(ceil(world.other_cell_type_count / CELL_ITEM_UNLOCKS)):
                     world.multiworld.itempool.append(world.create_item(name=item.item_name))
                     total_location_count -= 1
 
-    print(f"filler to place: {total_location_count}")
+    # print(f"filler to place: {total_location_count}")
     for _ in range(total_location_count):
         world.multiworld.itempool.append(world.create_item(name=world.get_filler_item_name()))
         total_location_count -= 1

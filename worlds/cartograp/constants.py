@@ -44,7 +44,7 @@ TRAP_ITEM_NAME: str = "Trap Item"
 
 MENU_REGION: str = "Menu"
 REGION_CHEST_EVENT_ITEM: str = "Region Chest Event Item"
-STARTING_CELLS_REVEALED: int = 100
+STARTING_CELLS_REVEALED: int = 200
 CELL_ITEM_UNLOCKS: int = 1
 
 
