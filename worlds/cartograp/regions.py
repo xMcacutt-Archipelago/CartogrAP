@@ -27,6 +27,7 @@ def create_regions(world: CartogrAPWorldBase) -> None:
     create_region(world=world, region_name=MENU_REGION)
     for cell_type in CellType:
         create_region(world=world, region_name=get_region_name_for_cell_type(cell_type=cell_type))
+    create_region(world=world, region_name=SHOP_REGION)
 
 
 def connect_region_to_region(world: CartogrAPWorldBase, source: str, target: str, rule: Rule[CartogrAPWorldBase]) -> None:
@@ -43,3 +44,5 @@ def connect_regions(world: CartogrAPWorldBase) -> None:
     connect_region_to_region(world=world, source=PLAIN_CELL_REGION, target=OCEAN_CELL_REGION, rule=CanGoOverWater())
     connect_region_to_region(world=world, source=PLAIN_CELL_REGION, target=CAVE_CELL_REGION, rule=CanSeeInDark())
     connect_region_to_region(world=world, source=PLAIN_CELL_REGION, target=SKY_CELL_REGION, rule=CanAccessTopLayer())
+
+    connect_region_to_region(world=world, source=MENU_REGION, target=SHOP_REGION, rule=True_[CartogrAPWorldBase]())

@@ -6,7 +6,7 @@ from typing import ClassVar, override, Mapping, Any
 from BaseClasses import MultiWorld, ItemClassification, CollectionState, Region, Item
 from rule_builder.rules import Has
 
-from .constants import GAME_NAME, REGION_CHEST_EVENT_ITEM
+from .constants import GAME_NAME, REGION_CHEST_EVENT_ITEM, REGION_CHESTS_NEEDED_FOR_GOAL
 from .items import CartogrAPItem, get_item_with_right_classification, CartogrAPItems, create_items
 from .locations import LocationData, generate_location_list, FULL_LOCATION_LIST
 from .regions import create_regions, connect_regions
@@ -29,6 +29,7 @@ class CartogrAPWorld(CartogrAPWorldBase):
         super().__init__(multiworld, player)
 
         self.location_list: list[LocationData] = []
+        self.items_created_dict: dict[str, int] = {}
 
     @override
     def get_filler_item_name(self) -> str:
@@ -49,7 +50,7 @@ class CartogrAPWorld(CartogrAPWorldBase):
     def create_regions(self) -> None:
         create_regions(world=self)
         connect_regions(world=self)
-        self.set_completion_rule(Has(item_name=REGION_CHEST_EVENT_ITEM, count=6))
+        self.set_completion_rule(Has(item_name=REGION_CHEST_EVENT_ITEM, count=REGION_CHESTS_NEEDED_FOR_GOAL))
 
 
     def create_items(self) -> None:

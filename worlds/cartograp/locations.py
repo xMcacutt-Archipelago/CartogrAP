@@ -3,14 +3,15 @@ Locations
 """
 import dataclasses
 import enum
-from math import floor
+from math import floor, ceil
 from unittest import case
 
 from BaseClasses import Location, LocationProgressType
-from rule_builder.rules import Rule
+from rule_builder.rules import Rule, Has
 
 from .constants import CellType, GAME_NAME, LocationLayer, QuestType, ChestType, PLAIN_CELL_REGION, \
-    REGION_CHEST_EVENT_ITEM, get_region_name_for_cell_type
+    REGION_CHEST_EVENT_ITEM, get_region_name_for_cell_type, CELL_UNLOCK_EVENT_ITEM, CELLS_NEEDED_PER_SHOP_ITEM, \
+    SHOP_REGION
 from .options import CellCount
 from .rules import get_default_true_rule, CanCutTree, HasCellSpawned, CanUnlockChest
 from .world_base import CartogrAPWorldBase
@@ -65,8 +66,8 @@ def get_region_cell_counts(world: CartogrAPWorldBase | None = None) -> tuple[int
         max_cell_count = world.options.cell_count.value
     starting_region_cell_count: int = int(max_cell_count / 5)
     other_region_cell_count: int = int((max_cell_count - starting_region_cell_count) / 5)
-    print(f"Starting Region: {starting_region_cell_count} Cells. Other Regions: {other_region_cell_count} Cells")
     if world is not None:
+        # print(f"Starting Region: {starting_region_cell_count} Cells. Other Regions: {other_region_cell_count} Cells")
         for cell_type in CellType:
             match cell_type:
                 case CellType.PLAIN_CELL:
@@ -101,13 +102,15 @@ def generate_location_list(world: CartogrAPWorldBase | None = None) -> list[Loca
 
     for cell_type in CellType:
         if cell_type is CellType.PLAIN_CELL:
-            _location_data += generate_locations_for_region(cell_count=starting_region_cell_count, cell_type=cell_type)
+            _location_data += generate_locations_for_cell_region(cell_count=starting_region_cell_count, cell_type=cell_type)
         else:
-            _location_data += generate_locations_for_region(cell_count=other_region_cell_count, cell_type=cell_type)
+            _location_data += generate_locations_for_cell_region(cell_count=other_region_cell_count, cell_type=cell_type)
+
+    _location_data += generate_locations_for_shop_region(total_cell_count=starting_region_cell_count + (other_region_cell_count * (len(CellType) - 1)))
     return _location_data
 
 
-def generate_locations_for_region(cell_count: int, cell_type: CellType) -> list[LocationData]:
+def generate_locations_for_cell_region(cell_count: int, cell_type: CellType) -> list[LocationData]:
     location_data: list[LocationData] = []
     special_feature_indexes: dict[int, QuestType | ChestType] = get_cell_indexes_for_special_cells(cell_count)
     cell_id_offset: int = get_id_offset(cell_type)
@@ -116,6 +119,8 @@ def generate_locations_for_region(cell_count: int, cell_type: CellType) -> list[
 
     for x in range(cell_count):
         loc_data: LocationData = LocationData(loc_name=f"{cell_type.value} #{x + 1}", code=cell_id_offset + 0x1 + x, region=get_region_name_for_cell_type(cell_type=cell_type), layer=layer, rule=HasCellSpawned(cell_type=cell_type, cell_index=x))
+        location_data.append(loc_data)
+        loc_data: LocationData = LocationData(loc_name=f"{cell_type.value} Unlock #{x + 1} Event Location", code=None, region=get_region_name_for_cell_type(cell_type=cell_type), layer=layer, rule=HasCellSpawned(cell_type=cell_type, cell_index=x), locked_item=CELL_UNLOCK_EVENT_ITEM)
         location_data.append(loc_data)
 
         if x in special_feature_indexes.keys():
@@ -126,7 +131,7 @@ def generate_locations_for_region(cell_count: int, cell_type: CellType) -> list[
                 match special_feature_indexes[x]:
                     case ChestType.UNLOCKED_CHEST:
                         chest_indexes: list[int] = [0, 2, 3, 6]
-                        chest_number: int = round(x / (cell_count / 8))
+                        chest_number: int = chest_indexes.index(round(x / (cell_count / 8)) - 1)
                         loc_data: LocationData = LocationData(loc_name=f"{cell_type.value} {special_feature_indexes[x].value} #{chest_number + 1}", code=quest_chest_id_offset + 0x1 + x_index, region=get_region_name_for_cell_type(cell_type=cell_type), layer=layer, rule=CanUnlockChest(cell_type=cell_type, cell_index=x, chest_type=ChestType.UNLOCKED_CHEST))
                     case ChestType.REGION_CHEST:
                         loc_data: LocationData = LocationData(loc_name=f"{cell_type.value} {special_feature_indexes[x].value}", code=quest_chest_id_offset + 0x1 + x_index, region=get_region_name_for_cell_type(cell_type=cell_type), layer=layer, rule=CanUnlockChest(cell_type=cell_type, cell_index=x, chest_type=ChestType.REGION_CHEST))
@@ -137,6 +142,14 @@ def generate_locations_for_region(cell_count: int, cell_type: CellType) -> list[
     loc_data: LocationData = LocationData(loc_name=f"{cell_type.value} Region Chest Event Location", code=None, region=get_region_name_for_cell_type(cell_type=cell_type), layer=layer, rule=CanUnlockChest(cell_type=cell_type, cell_index=cell_count - 1, chest_type=ChestType.REGION_CHEST), locked_item=REGION_CHEST_EVENT_ITEM)
     location_data.append(loc_data)
     return location_data
+
+
+def generate_locations_for_shop_region(total_cell_count: int) -> list[LocationData]:
+    _location_data: list[LocationData] = []
+    for x in range(floor(total_cell_count / CELLS_NEEDED_PER_SHOP_ITEM)):
+        loc_data: LocationData = LocationData(loc_name=f"{(x + 1) * CELLS_NEEDED_PER_SHOP_ITEM} Cells Shop Item", code=0x20000 + 0x1 + x, region=SHOP_REGION, layer=LocationLayer.STARTING_LAYER, rule=Has(item_name=CELL_UNLOCK_EVENT_ITEM, count=(x + 1) * CELLS_NEEDED_PER_SHOP_ITEM))
+        _location_data.append(loc_data)
+    return _location_data
 
 
 def get_cell_indexes_for_special_cells(region_cell_count: int) -> dict[int, QuestType | ChestType]:

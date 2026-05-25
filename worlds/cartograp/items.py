@@ -69,24 +69,32 @@ def create_items(world: CartogrAPWorldBase) -> None:
     total_location_count = len(world.multiworld.get_unfilled_locations(world.player))
     print(f"total_location_count: {total_location_count}")
     for item in CartogrAPItems:
+        if item.item_name not in world.items_created_dict.keys():
+            world.items_created_dict[item.item_name] = 0
         if item.classification is ItemClassification.progression:
             if item.amount > 0:
                 for _ in range(item.amount):
                     world.multiworld.itempool.append(world.create_item(name=item.item_name))
+                    world.items_created_dict[item.item_name] += 1
                     total_location_count -= 1
             elif item.item_name == PLAIN_CELL_ITEM_NAME:
                 for _ in range(ceil((world.plain_cell_count - STARTING_CELLS_REVEALED) / CELL_ITEM_UNLOCKS)):
                     world.multiworld.itempool.append(world.create_item(name=item.item_name))
+                    world.items_created_dict[item.item_name] += 1
                     total_location_count -= 1
             else:
                 for _ in range(ceil(world.other_cell_type_count / CELL_ITEM_UNLOCKS)):
                     world.multiworld.itempool.append(world.create_item(name=item.item_name))
+                    world.items_created_dict[item.item_name] += 1
                     total_location_count -= 1
 
     # print(f"filler to place: {total_location_count}")
+    world.items_created_dict[FILLER_ITEM_NAME] = total_location_count
     for _ in range(total_location_count):
         world.multiworld.itempool.append(world.create_item(name=world.get_filler_item_name()))
         total_location_count -= 1
+
+    # print(f"items_created_dict: {world.items_created_dict}")
 
 
 class CartogrAPItems(enum.Enum):

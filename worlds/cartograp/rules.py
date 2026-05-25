@@ -6,7 +6,7 @@ from math import floor, ceil
 from typing import override
 from unittest import case
 
-from rule_builder.rules import Rule, True_, TWorld, Has
+from rule_builder.rules import Rule, True_, TWorld, Has, HasFromList
 
 from .constants import GAME_NAME, CellType, PLAIN_CELL_ITEM_NAME, FOREST_CELL_ITEM_NAME, MOUNTAIN_CELL_ITEM_NAME, \
     OCEAN_CELL_ITEM_NAME, ChestType, STARTING_CELLS_REVEALED, CELL_ITEM_UNLOCKS

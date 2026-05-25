@@ -44,8 +44,13 @@ TRAP_ITEM_NAME: str = "Trap Item"
 
 MENU_REGION: str = "Menu"
 REGION_CHEST_EVENT_ITEM: str = "Region Chest Event Item"
-STARTING_CELLS_REVEALED: int = 200
+STARTING_CELLS_REVEALED: int = 50
 CELL_ITEM_UNLOCKS: int = 1
+REGION_CHESTS_NEEDED_FOR_GOAL: int = 6
+
+CELLS_NEEDED_PER_SHOP_ITEM: int = 2
+CELL_UNLOCK_EVENT_ITEM: str = "Cell Unlock Event Item"
+SHOP_REGION: str = "Shop Region"
 
 
 
@@ -94,3 +99,36 @@ def get_region_name_for_cell_type(cell_type: CellType) -> str:
             return CAVE_CELL_REGION
         case CellType.SKY_CELL:
             return SKY_CELL_REGION
+
+
+
+"""
+MOVEMENT
+Checkpoint filler (spawn checkpoint) (limit count apworld)
+placeable bridge (limited amount) (much better) (non-ocean)
+placeable checkpoint
+placeable ladder
+placeable downstairs
+
+
+Color (something here)
+audio filler?
+
+charmy trap?
+
+fast travel (prob not)
+
+
+freeze trap
+slow trap
+rotate map trap
+trap sends to start cell of region
+
+"""
+
+
+
+
+
+
+
