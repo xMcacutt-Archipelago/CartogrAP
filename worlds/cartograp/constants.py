@@ -40,12 +40,18 @@ SKY_CELL_ITEM_NAME: str = "Sky Cell"
 SKY_KEY_ITEM_NAME: str = "Sky Key"
 SKY_CELL_REGION: str = "Sky Region"
 FILLER_ITEM_NAME: str = "Filler Item"
+
+MONEY_100: str = "$100"
+MONEY_500: str = "$500"
+MONEY_1000: str = "$1000"
+MONEY_2000: str = "$2000"
+
 TRAP_ITEM_NAME: str = "Trap Item"
 
 MENU_REGION: str = "Menu"
 REGION_CHEST_EVENT_ITEM: str = "Region Chest Event Item"
-STARTING_CELLS_REVEALED: int = 50
-CELL_ITEM_UNLOCKS: int = 1
+STARTING_CELLS_REVEALED: int = 25
+CELL_ITEM_UNLOCKS: int = 2
 REGION_CHESTS_NEEDED_FOR_GOAL: int = 6
 
 CELLS_NEEDED_PER_SHOP_ITEM: int = 2

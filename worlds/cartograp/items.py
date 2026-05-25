@@ -123,9 +123,15 @@ class CartogrAPItems(enum.Enum):
     SKY_KEY = ItemData(item_name=get_region_chest_key_item_name(CellType.SKY_CELL), code=0x53, classification=ItemClassification.progression)
 
 
-    FILLER_ITEM = ItemData(item_name=FILLER_ITEM_NAME, code=0x100, classification=ItemClassification.filler)
+    # FILLER_ITEM = ItemData(item_name=FILLER_ITEM_NAME, code=0x100, classification=ItemClassification.filler)
+    MONEY_100 = ItemData(item_name=MONEY_100, code=0x101, classification=ItemClassification.filler)
+    MONEY_500 = ItemData(item_name=MONEY_500, code=0x102, classification=ItemClassification.filler)
+    MONEY_1000 = ItemData(item_name=MONEY_1000, code=0x103, classification=ItemClassification.filler)
+    MONEY_2000 = ItemData(item_name=MONEY_2000, code=0x104, classification=ItemClassification.filler)
 
     TRAP_ITEM = ItemData(item_name=TRAP_ITEM_NAME, code=0x200, classification=ItemClassification.trap)
+
+
 
     def __new__(cls, item_data: ItemData) -> Self:
         obj = object.__new__(cls)

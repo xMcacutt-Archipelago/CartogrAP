@@ -106,7 +106,7 @@ def generate_location_list(world: CartogrAPWorldBase | None = None) -> list[Loca
         else:
             _location_data += generate_locations_for_cell_region(cell_count=other_region_cell_count, cell_type=cell_type)
 
-    _location_data += generate_locations_for_shop_region(total_cell_count=starting_region_cell_count + (other_region_cell_count * (len(CellType) - 1)))
+    # _location_data += generate_locations_for_shop_region(total_cell_count=starting_region_cell_count + (other_region_cell_count * (len(CellType) - 1)))
     return _location_data
 
 
@@ -120,8 +120,10 @@ def generate_locations_for_cell_region(cell_count: int, cell_type: CellType) -> 
     for x in range(cell_count):
         loc_data: LocationData = LocationData(loc_name=f"{cell_type.value} #{x + 1}", code=cell_id_offset + 0x1 + x, region=get_region_name_for_cell_type(cell_type=cell_type), layer=layer, rule=HasCellSpawned(cell_type=cell_type, cell_index=x))
         location_data.append(loc_data)
-        loc_data: LocationData = LocationData(loc_name=f"{cell_type.value} Unlock #{x + 1} Event Location", code=None, region=get_region_name_for_cell_type(cell_type=cell_type), layer=layer, rule=HasCellSpawned(cell_type=cell_type, cell_index=x), locked_item=CELL_UNLOCK_EVENT_ITEM)
-        location_data.append(loc_data)
+
+        # Cell Event Location
+        # loc_data: LocationData = LocationData(loc_name=f"{cell_type.value} Unlock #{x + 1} Event Location", code=None, region=get_region_name_for_cell_type(cell_type=cell_type), layer=layer, rule=HasCellSpawned(cell_type=cell_type, cell_index=x), locked_item=CELL_UNLOCK_EVENT_ITEM)
+        # location_data.append(loc_data)
 
         if x in special_feature_indexes.keys():
             x_index: int = list(special_feature_indexes.keys()).index(x)
@@ -144,12 +146,12 @@ def generate_locations_for_cell_region(cell_count: int, cell_type: CellType) -> 
     return location_data
 
 
-def generate_locations_for_shop_region(total_cell_count: int) -> list[LocationData]:
-    _location_data: list[LocationData] = []
-    for x in range(floor(total_cell_count / CELLS_NEEDED_PER_SHOP_ITEM)):
-        loc_data: LocationData = LocationData(loc_name=f"{(x + 1) * CELLS_NEEDED_PER_SHOP_ITEM} Cells Shop Item", code=0x20000 + 0x1 + x, region=SHOP_REGION, layer=LocationLayer.STARTING_LAYER, rule=Has(item_name=CELL_UNLOCK_EVENT_ITEM, count=(x + 1) * CELLS_NEEDED_PER_SHOP_ITEM))
-        _location_data.append(loc_data)
-    return _location_data
+# def generate_locations_for_shop_region(total_cell_count: int) -> list[LocationData]:
+#     _location_data: list[LocationData] = []
+#     for x in range(floor(total_cell_count / CELLS_NEEDED_PER_SHOP_ITEM)):
+#         loc_data: LocationData = LocationData(loc_name=f"{(x + 1) * CELLS_NEEDED_PER_SHOP_ITEM} Cells Shop Item", code=0x20000 + 0x1 + x, region=SHOP_REGION, layer=LocationLayer.STARTING_LAYER, rule=Has(item_name=CELL_UNLOCK_EVENT_ITEM, count=(x + 1) * CELLS_NEEDED_PER_SHOP_ITEM))
+#         _location_data.append(loc_data)
+#     return _location_data
 
 
 def get_cell_indexes_for_special_cells(region_cell_count: int) -> dict[int, QuestType | ChestType]:
