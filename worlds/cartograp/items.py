@@ -38,8 +38,8 @@ def get_cell_item_name(cell_type: CellType) -> str:
             return PLAIN_CELL_ITEM_NAME
         case CellType.FOREST_CELL:
             return FOREST_CELL_ITEM_NAME
-        case CellType.MOUNTAIN_CELL:
-            return MOUNTAIN_CELL_ITEM_NAME
+        case CellType.BOG_CELL:
+            return BOG_CELL_ITEM_NAME
         case CellType.OCEAN_CELL:
             return OCEAN_CELL_ITEM_NAME
         case CellType.CAVE_CELL:
@@ -55,8 +55,8 @@ def get_region_chest_key_item_name(cell_type: CellType) -> str:
             return PLAIN_KEY_ITEM_NAME
         case CellType.FOREST_CELL:
             return FOREST_KEY_ITEM_NAME
-        case CellType.MOUNTAIN_CELL:
-            return MOUNTAIN_KEY_ITEM_NAME
+        case CellType.BOG_CELL:
+            return BOG_KEY_ITEM_NAME
         case CellType.OCEAN_CELL:
             return OCEAN_KEY_ITEM_NAME
         case CellType.CAVE_CELL:
@@ -106,9 +106,9 @@ class CartogrAPItems(enum.Enum):
     FOREST_CELL = ItemData(item_name=get_cell_item_name(CellType.FOREST_CELL), code=0x12, classification=ItemClassification.progression, amount=-1)
     FOREST_KEY = ItemData(item_name=get_region_chest_key_item_name(CellType.FOREST_CELL), code=0x13, classification=ItemClassification.progression)
 
-    PICKAXE = ItemData(item_name=PICKAXE_ITEM_NAME, code=0x21, classification=ItemClassification.progression)
-    MOUNTAIN_CELL = ItemData(item_name=get_cell_item_name(CellType.MOUNTAIN_CELL), code=0x22, classification=ItemClassification.progression, amount=-1)
-    MOUNTAIN_KEY = ItemData(item_name=get_region_chest_key_item_name(CellType.MOUNTAIN_CELL), code=0x23, classification=ItemClassification.progression)
+    WELLIES = ItemData(item_name=WELLIES_ITEM_NAME, code=0x21, classification=ItemClassification.progression)
+    BOG_CELL = ItemData(item_name=get_cell_item_name(CellType.BOG_CELL), code=0x22, classification=ItemClassification.progression, amount=-1)
+    BOG_KEY = ItemData(item_name=get_region_chest_key_item_name(CellType.BOG_CELL), code=0x23, classification=ItemClassification.progression)
 
     BOAT = ItemData(item_name=BOAT_ITEM_NAME, code=0x31, classification=ItemClassification.progression)
     OCEAN_CELL = ItemData(item_name=get_cell_item_name(CellType.OCEAN_CELL), code=0x32, classification=ItemClassification.progression, amount=-1)
@@ -121,9 +121,8 @@ class CartogrAPItems(enum.Enum):
     LADDER = ItemData(item_name=LADDER_ITEM_NAME, code=0x51, classification=ItemClassification.progression)
     SKY_CELL = ItemData(item_name=get_cell_item_name(CellType.SKY_CELL), code=0x52, classification=ItemClassification.progression, amount=-1)
     SKY_KEY = ItemData(item_name=get_region_chest_key_item_name(CellType.SKY_CELL), code=0x53, classification=ItemClassification.progression)
+    WIND_SHIELD = ItemData(item_name=WIND_SHIELD_ITEM_NAME, code=0x54, classification=ItemClassification.useful)
 
-
-    # FILLER_ITEM = ItemData(item_name=FILLER_ITEM_NAME, code=0x100, classification=ItemClassification.filler)
     MONEY_100 = ItemData(item_name=MONEY_100, code=0x101, classification=ItemClassification.filler)
     MONEY_500 = ItemData(item_name=MONEY_500, code=0x102, classification=ItemClassification.filler)
     MONEY_1000 = ItemData(item_name=MONEY_1000, code=0x103, classification=ItemClassification.filler)

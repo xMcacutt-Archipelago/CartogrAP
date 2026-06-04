@@ -40,7 +40,7 @@ def connect_region_to_region(world: CartogrAPWorldBase, source: str, target: str
 def connect_regions(world: CartogrAPWorldBase) -> None:
     connect_region_to_region(world=world, source=MENU_REGION, target=PLAIN_CELL_REGION, rule=True_[CartogrAPWorldBase]())
     connect_region_to_region(world=world, source=PLAIN_CELL_REGION, target=FOREST_CELL_REGION, rule=CanCutTree())
-    connect_region_to_region(world=world, source=PLAIN_CELL_REGION, target=MOUNTAIN_CELL_REGION, rule=CanBreakRock())
+    connect_region_to_region(world=world, source=PLAIN_CELL_REGION, target=BOG_CELL_REGION, rule=CanBreakRock())
     connect_region_to_region(world=world, source=PLAIN_CELL_REGION, target=OCEAN_CELL_REGION, rule=CanGoOverWater())
     connect_region_to_region(world=world, source=PLAIN_CELL_REGION, target=CAVE_CELL_REGION, rule=CanSeeInDark())
     connect_region_to_region(world=world, source=PLAIN_CELL_REGION, target=SKY_CELL_REGION, rule=CanAccessTopLayer())

@@ -2,6 +2,7 @@
 Constants used by the APWorld
 """
 import enum
+from typing import Self, Literal
 
 GAME_NAME: str = "CartogrAP"
 WEB_WORLD_THEME: str = "partyTime"
@@ -23,10 +24,10 @@ AXE_ITEM_NAME: str = "Axe"
 FOREST_CELL_ITEM_NAME: str = "Forest Cell"
 FOREST_KEY_ITEM_NAME: str = "Forest Key"
 FOREST_CELL_REGION: str = "Forest Region"
-PICKAXE_ITEM_NAME: str = "Pickaxe"
-MOUNTAIN_CELL_ITEM_NAME: str = "Mountain Cell"
-MOUNTAIN_KEY_ITEM_NAME: str = "Mountain Key"
-MOUNTAIN_CELL_REGION: str = "Mountain Region"
+WELLIES_ITEM_NAME: str = "Wellies"
+BOG_CELL_ITEM_NAME: str = "Bog Cell"
+BOG_KEY_ITEM_NAME: str = "Bog Key"
+BOG_CELL_REGION: str = "Bog Region"
 BOAT_ITEM_NAME: str = "Boat"
 OCEAN_CELL_ITEM_NAME: str = "Ocean Cell"
 OCEAN_KEY_ITEM_NAME: str = "Ocean Key"
@@ -39,6 +40,7 @@ LADDER_ITEM_NAME: str = "Ladder"
 SKY_CELL_ITEM_NAME: str = "Sky Cell"
 SKY_KEY_ITEM_NAME: str = "Sky Key"
 SKY_CELL_REGION: str = "Sky Region"
+WIND_SHIELD_ITEM_NAME: str = "Wind Shield"
 FILLER_ITEM_NAME: str = "Filler Item"
 
 MONEY_100: str = "$100"
@@ -59,15 +61,17 @@ CELL_UNLOCK_EVENT_ITEM: str = "Cell Unlock Event Item"
 SHOP_REGION: str = "Shop Region"
 
 
+class CellType(enum.Enum):
+    PLAIN_CELL = ("Plain Cell", 0)
+    FOREST_CELL = ("Forest Cell", 1)
+    BOG_CELL = ("Bog Cell", 2)
+    OCEAN_CELL = ("Ocean Cell", 3)
+    CAVE_CELL = ("Cave Cell", 4)
+    SKY_CELL = ("Sky Cell", 5)
 
-
-class CellType(enum.StrEnum):
-    PLAIN_CELL = "Plain Cell"
-    FOREST_CELL = "Forest Cell"
-    MOUNTAIN_CELL = "Mountain Cell"
-    OCEAN_CELL = "Ocean Cell"
-    CAVE_CELL = "Cave Cell"
-    SKY_CELL = "Sky Cell"
+    def __init__(self, cell_type_name: str, cell_type_index: int):
+        self.cell_type_name = cell_type_name
+        self.cell_type_index = cell_type_index
 
 
 class LocationLayer(enum.Enum):
@@ -76,18 +80,48 @@ class LocationLayer(enum.Enum):
     BELOW_LAYER = "Below Layer"
 
 
-class QuestType(enum.StrEnum):
-    SPEED_RUN = "Speedrun"
-    SHORTEST_PATH = "Shortest Path"
-    TREASURE_HUNT = "Treasure Hunt"
+class CellObjectType(enum.Enum):
+    NONE = -1
+    QUEST = 0
+    CHEST = 1
 
 
-class ChestType(enum.StrEnum):
-    UNLOCKED_CHEST = "Unlocked Chest"
-    REGION_CHEST = "Region Chest"
+class CellObject(enum.Enum):
+    NONE = ("", CellObjectType.NONE, [], None)
+    QUEST_SPEEDRUN = ("Speedrun Quest", CellObjectType.QUEST, [1], 0)
+    QUEST_PATH = ("Shortest Path Quest", CellObjectType.QUEST, [4], 1)
+    QUEST_HUNT = ("Treasure Hunt Quest", CellObjectType.QUEST, [5], 2)
+    CHEST_UNLOCKED = ("Unlocked Chest", CellObjectType.CHEST, [0, 2, 3, 6], 1)
+    CHEST_REGION = ("Region Chest", CellObjectType.CHEST, [7], 0)
 
+    def __init__(self, object_name: str, object_type: CellObjectType, object_indices: list[int], object_extra_id_offset: int):
+        self.object_name = object_name
+        self.object_type = object_type
+        self.object_indices = object_indices
+        self.object_extra_id_offset = object_extra_id_offset
 
+    def get_id_offset(self, cell_type) -> int:
+        if self.object_type is CellObjectType.NONE:
+            return 0x1000 * cell_type.cell_type_index
+        if self.object_type is CellObjectType.CHEST:
+            return 0x10000 + 0x10 * cell_type.cell_type_index
+        if self.object_type is CellObjectType.QUEST:
+            return 0x10100 + 0x10 * cell_type.cell_type_index
+        return -1
 
+    @classmethod
+    def get_object_for_index(cls, index: int) -> Self:
+        for cell_object in cls:
+            if index in cell_object.object_indices:
+                return cell_object
+        return cls.NONE
+
+    @classmethod
+    def get_total_object_count(cls) -> int:
+        count: int = 0
+        for cell_object in cls:
+            count += len(cell_object.object_indices)
+        return count
 
 
 def get_region_name_for_cell_type(cell_type: CellType) -> str:
@@ -97,15 +131,14 @@ def get_region_name_for_cell_type(cell_type: CellType) -> str:
             return PLAIN_CELL_REGION
         case CellType.FOREST_CELL:
             return FOREST_CELL_REGION
-        case CellType.MOUNTAIN_CELL:
-            return MOUNTAIN_CELL_REGION
+        case CellType.BOG_CELL:
+            return BOG_CELL_REGION
         case CellType.OCEAN_CELL:
             return OCEAN_CELL_REGION
         case CellType.CAVE_CELL:
             return CAVE_CELL_REGION
         case CellType.SKY_CELL:
             return SKY_CELL_REGION
-
 
 
 """
