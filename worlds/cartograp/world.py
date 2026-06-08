@@ -33,7 +33,7 @@ class CartogrAPWorld(CartogrAPWorldBase):
 
     @override
     def get_filler_item_name(self) -> str:
-        return self.random.choice([item.item_name for item in CartogrAPItems if ItemClassification.filler in item.classification])
+        return self.random.choice([item.item_name for item in CartogrAPItems if item.classification is ItemClassification.filler])
 
 
     @override

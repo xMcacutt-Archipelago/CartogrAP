@@ -43,10 +43,7 @@ SKY_CELL_REGION: str = "Sky Region"
 WIND_SHIELD_ITEM_NAME: str = "Wind Shield"
 FILLER_ITEM_NAME: str = "Filler Item"
 
-MONEY_100: str = "$100"
-MONEY_500: str = "$500"
-MONEY_1000: str = "$1000"
-MONEY_2000: str = "$2000"
+MONEY_ITEM_NAME: str = "Money"
 
 TRAP_ITEM_NAME: str = "Trap Item"
 
