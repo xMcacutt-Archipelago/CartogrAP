@@ -11,7 +11,7 @@ from rule_builder.rules import Rule, Has, True_
 
 from .constants import CellType, GAME_NAME, LocationLayer, PLAIN_CELL_REGION, \
     REGION_CHEST_EVENT_ITEM, get_region_name_for_cell_type, CELL_UNLOCK_EVENT_ITEM, CELLS_NEEDED_PER_SHOP_ITEM, \
-    SHOP_REGION, CellObject, CellObjectType
+    CellObject, CellObjectType, CHANCE_TO_EXCLUDE_FISH_LOCATION, FISH_LOCATION_START_ID
 from .options import CellCount
 from .rules import get_default_true_rule, CanCutTree, HasCellSpawned, CanUnlockChest, get_rule_for_cell_object
 from .world_base import CartogrAPWorldBase
@@ -26,6 +26,45 @@ class LocationData:
     layer: LocationLayer = LocationLayer.STARTING_LAYER
     locked_item: str | None = None
     progress_type: LocationProgressType = LocationProgressType.DEFAULT
+
+
+@dataclasses.dataclass(kw_only=True, frozen=True)
+class _FishData:
+    fish_name: str
+    spawn_weight: int
+
+
+
+class Fish(enum.Enum):
+    LARGEMOUTH_BASS = _FishData(fish_name="Largemouth Bass", spawn_weight=100)
+    BLUEGILL = _FishData(fish_name="Bluegill", spawn_weight=100)
+    KOKANEE_SALMON = _FishData(fish_name="Kokanee Salmon", spawn_weight=70)
+    BLACK_BULLHEAD_CATFISH = _FishData(fish_name="Black Bullhead Catfish", spawn_weight=50)
+    RAINBOW_TROUT = _FishData(fish_name="Rainbow Trout", spawn_weight=40)
+    GOLDEN_TROUT = _FishData(fish_name="Golden Trout", spawn_weight=20)
+    ARCTIC_GRAYLING = _FishData(fish_name="Arctic Grayling", spawn_weight=15)
+    DERP_FISH = _FishData(fish_name="Derp Fish", spawn_weight=5)
+    CAT_IN_QUOTATION_MARKS_FISH = _FishData(fish_name="Cat In Quotation Marks Fish", spawn_weight=1)
+
+
+    def __new__(cls, fish_data: _FishData):
+        obj = object.__new__(cls)
+        obj._value_ = fish_data
+        return obj
+
+
+    def __init__(self, fish_data: _FishData):
+        self.fish_name = fish_data.fish_name
+        self.spawn_weight = fish_data.spawn_weight
+
+
+    def get_spawn_chance(self) -> float:
+        total_spawn_weight: int = sum([fish_data.spawn_weight for fish_data in Fish])
+        return self.spawn_weight / total_spawn_weight
+
+
+    def should_exclude_location(self) -> bool:
+        return self.get_spawn_chance() <= CHANCE_TO_EXCLUDE_FISH_LOCATION
 
 
 
@@ -75,6 +114,10 @@ def generate_location_list(world: CartogrAPWorldBase | None = None) -> list[Loca
         else:
             _location_data += generate_locations_for_cell_region(cell_count=other_region_cell_count, cell_type=cell_type)
 
+
+    # fish locations
+    _location_data += generate_fish_locations()
+
     # _location_data += generate_locations_for_shop_region(total_cell_count=starting_region_cell_count + (other_region_cell_count * (len(CellType) - 1)))
     return _location_data
 
@@ -111,6 +154,29 @@ def generate_locations_for_cell_region(cell_count: int, cell_type: CellType) -> 
 #         loc_data: LocationData = LocationData(loc_name=f"{(x + 1) * CELLS_NEEDED_PER_SHOP_ITEM} Cells Shop Item", code=0x20000 + 0x1 + x, region=SHOP_REGION, layer=LocationLayer.STARTING_LAYER, rule=Has(item_name=CELL_UNLOCK_EVENT_ITEM, count=(x + 1) * CELLS_NEEDED_PER_SHOP_ITEM))
 #         _location_data.append(loc_data)
 #     return _location_data
+
+
+
+def generate_fish_locations() -> list[LocationData]:
+    # loc_name: str
+    # code: int | None
+    # region: str
+    # rule: Rule[CartogrAPWorldBase] = dataclasses.field(default_factory=get_default_true_rule)
+    # layer: LocationLayer = LocationLayer.STARTING_LAYER
+    # locked_item: str | None = None
+    # progress_type: LocationProgressType = LocationProgressType.DEFAULT
+
+    _result: list[LocationData] = []
+    for index, fish in enumerate(Fish):
+        loc_progress_type: LocationProgressType = LocationProgressType.EXCLUDED if fish.should_exclude_location() else LocationProgressType.DEFAULT
+        loc_data = LocationData(loc_name=f"Catch {fish.fish_name}", code=FISH_LOCATION_START_ID + index, region=get_region_name_for_cell_type(cell_type=CellType.OCEAN_CELL), rule=HasCellSpawned(cell_type=CellType.OCEAN_CELL, cell_index=0), progress_type=loc_progress_type)
+        _result.append(loc_data)
+
+    return _result
+
+
+
+
 
 
 FULL_LOCATION_LIST: list[LocationData] = generate_location_list()

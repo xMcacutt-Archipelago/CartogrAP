@@ -55,7 +55,10 @@ REGION_CHESTS_NEEDED_FOR_GOAL: int = 6
 
 CELLS_NEEDED_PER_SHOP_ITEM: int = 2
 CELL_UNLOCK_EVENT_ITEM: str = "Cell Unlock Event Item"
-SHOP_REGION: str = "Shop Region"
+
+
+FISH_LOCATION_START_ID: int = 0x20000
+CHANCE_TO_EXCLUDE_FISH_LOCATION: float = 0.05
 
 
 class CellType(enum.Enum):

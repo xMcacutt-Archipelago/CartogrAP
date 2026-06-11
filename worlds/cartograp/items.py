@@ -71,9 +71,7 @@ def create_items(world: CartogrAPWorldBase) -> None:
     for item in CartogrAPItems:
         if item.item_name not in world.items_created_dict.keys():
             world.items_created_dict[item.item_name] = 0
-        if item.classification is ItemClassification.useful:
-            for _ in range(item.amount):
-                world.multiworld.itempool.append(world.create_item(name=item.item_name))
+
         if item.classification is ItemClassification.progression:
             if item.amount > 0:
                 for _ in range(item.amount):
@@ -90,6 +88,12 @@ def create_items(world: CartogrAPWorldBase) -> None:
                     world.multiworld.itempool.append(world.create_item(name=item.item_name))
                     world.items_created_dict[item.item_name] += 1
                     total_location_count -= 1
+
+        if item.classification is ItemClassification.useful:
+            for _ in range(item.amount):
+                world.multiworld.itempool.append(world.create_item(name=item.item_name))
+                world.items_created_dict[item.item_name] += 1
+                total_location_count -= 1
 
     # print(f"filler to place: {total_location_count}")
     world.items_created_dict[FILLER_ITEM_NAME] = total_location_count
