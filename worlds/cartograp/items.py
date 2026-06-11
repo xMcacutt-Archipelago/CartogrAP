@@ -71,6 +71,9 @@ def create_items(world: CartogrAPWorldBase) -> None:
     for item in CartogrAPItems:
         if item.item_name not in world.items_created_dict.keys():
             world.items_created_dict[item.item_name] = 0
+        if item.classification is ItemClassification.useful:
+            for _ in range(item.amount):
+                world.multiworld.itempool.append(world.create_item(name=item.item_name))
         if item.classification is ItemClassification.progression:
             if item.amount > 0:
                 for _ in range(item.amount):
@@ -123,10 +126,9 @@ class CartogrAPItems(enum.Enum):
     SKY_KEY = ItemData(item_name=get_region_chest_key_item_name(CellType.SKY_CELL), code=0x53, classification=ItemClassification.progression)
     WIND_SHIELD = ItemData(item_name=WIND_SHIELD_ITEM_NAME, code=0x54, classification=ItemClassification.useful)
 
-    MONEY_100 = ItemData(item_name=MONEY_ITEM_NAME, code=0x101, classification=ItemClassification.filler)
+    MONEY = ItemData(item_name=MONEY_ITEM_NAME, code=0x101, classification=ItemClassification.filler)
 
     TRAP_ITEM = ItemData(item_name=TRAP_ITEM_NAME, code=0x200, classification=ItemClassification.trap)
-
 
 
     def __new__(cls, item_data: ItemData) -> Self:
