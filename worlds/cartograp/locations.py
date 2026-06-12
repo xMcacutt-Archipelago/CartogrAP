@@ -45,6 +45,9 @@ class Fish(enum.Enum):
     ARCTIC_GRAYLING = _FishData(fish_name="Arctic Grayling", spawn_weight=15)
     DERP_FISH = _FishData(fish_name="Derp Fish", spawn_weight=5)
     CAT_IN_QUOTATION_MARKS_FISH = _FishData(fish_name="Cat In Quotation Marks Fish", spawn_weight=1)
+    YELLOW_PERCH = _FishData(fish_name="Yellow Perch", spawn_weight=50)
+    RAZORBACK_SUCKER = _FishData(fish_name="Razorback Sucker", spawn_weight=75)
+    BLACK_CRAPPIE = _FishData(fish_name="Black Crappie", spawn_weight=60)
 
 
     def __new__(cls, fish_data: _FishData):
