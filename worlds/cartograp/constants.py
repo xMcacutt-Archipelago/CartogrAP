@@ -4,6 +4,8 @@ Constants used by the APWorld
 import enum
 from typing import Self, Literal
 
+from BaseClasses import LocationProgressType
+
 GAME_NAME: str = "CartogrAP"
 WEB_WORLD_THEME: str = "partyTime"
 
@@ -108,6 +110,17 @@ class CellObject(enum.Enum):
         if self.object_type is CellObjectType.QUEST:
             return 0x10100 + 0x10 * cell_type.cell_type_index
         return -1
+
+
+    def get_location_progress_type(self) -> LocationProgressType:
+        # Priority Locations does not work when solo (as Cell Items are deprioritized)
+        match self.object_type:
+            case CellObjectType.NONE:
+                return LocationProgressType.DEFAULT
+            case CellObjectType.QUEST:
+                return LocationProgressType.DEFAULT
+            case CellObjectType.CHEST:
+                return LocationProgressType.DEFAULT
 
     @classmethod
     def get_object_for_index(cls, index: int) -> Self:

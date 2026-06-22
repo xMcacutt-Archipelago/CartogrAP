@@ -138,14 +138,15 @@ def generate_locations_for_cell_region(cell_count: int, cell_type: CellType) -> 
         if x + 1 in object_indices:
             object_index: int = object_indices.index(x + 1)
             cell_object: CellObject = CellObject.get_object_for_index(object_index)
+            location_progress_type: LocationProgressType = cell_object.get_location_progress_type()
             cell_object_index: int = cell_object.object_indices.index(object_index)
             loc_name: str = f"{cell_type.cell_type_name} {cell_object.object_name}"
             loc_id: int = cell_object.get_id_offset(cell_type) + 0x1 + cell_object.object_extra_id_offset + cell_object_index
             if len(cell_object.object_indices) > 1:
                 loc_name += f" {cell_object_index + 1}"
-            loc_data: LocationData = LocationData(loc_name=loc_name, code=loc_id, region=get_region_name_for_cell_type(cell_type=cell_type), layer=layer, rule=get_rule_for_cell_object(cell_object, cell_type, x))
+            loc_data: LocationData = LocationData(loc_name=loc_name, code=loc_id, region=get_region_name_for_cell_type(cell_type=cell_type), layer=layer, rule=get_rule_for_cell_object(cell_object, cell_type, x), progress_type=location_progress_type)
             location_data.append(loc_data)
-    loc_data: LocationData = LocationData(loc_name=f"{cell_type.cell_type_name} Region Chest Event Location", code=None, region=get_region_name_for_cell_type(cell_type=cell_type), layer=layer, rule=CanUnlockChest(cell_type=cell_type, cell_index=cell_count - 1, cell_object=CellObject.CHEST_REGION), locked_item=REGION_CHEST_EVENT_ITEM)
+    loc_data: LocationData = LocationData(loc_name=f"{cell_type.cell_type_name} Region Chest Event Location", code=None, region=get_region_name_for_cell_type(cell_type=cell_type), layer=layer, rule=CanUnlockChest(cell_type=cell_type, cell_index=cell_count - 1, cell_object=CellObject.CHEST_REGION), locked_item=REGION_CHEST_EVENT_ITEM, progress_type=LocationProgressType.DEFAULT)
     location_data.append(loc_data)
     return location_data
 

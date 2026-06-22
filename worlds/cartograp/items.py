@@ -72,7 +72,7 @@ def create_items(world: CartogrAPWorldBase) -> None:
         if item.item_name not in world.items_created_dict.keys():
             world.items_created_dict[item.item_name] = 0
 
-        if item.classification is ItemClassification.progression:
+        if ItemClassification.progression in item.classification:
             if item.amount > 0:
                 for _ in range(item.amount):
                     world.multiworld.itempool.append(world.create_item(name=item.item_name))
@@ -89,7 +89,7 @@ def create_items(world: CartogrAPWorldBase) -> None:
                     world.items_created_dict[item.item_name] += 1
                     total_location_count -= 1
 
-        if item.classification is ItemClassification.useful:
+        elif item.classification is ItemClassification.useful:
             for _ in range(item.amount):
                 world.multiworld.itempool.append(world.create_item(name=item.item_name))
                 world.items_created_dict[item.item_name] += 1
@@ -106,27 +106,27 @@ def create_items(world: CartogrAPWorldBase) -> None:
 
 class CartogrAPItems(enum.Enum):
     # NOTHING = ItemData(item_name=NOTHING_ITEM_NAME, code=0x1, classification=ItemClassification.progression, amount=0) # <- plain region needs no item
-    PLAIN_CELL = ItemData(item_name=get_cell_item_name(CellType.PLAIN_CELL), code=0x2, classification=ItemClassification.progression, amount=-1)
+    PLAIN_CELL = ItemData(item_name=get_cell_item_name(CellType.PLAIN_CELL), code=0x2, classification=ItemClassification.progression_deprioritized, amount=-1)
     PLAIN_KEY = ItemData(item_name=get_region_chest_key_item_name(CellType.PLAIN_CELL), code=0x3, classification=ItemClassification.progression)
 
     AXE = ItemData(item_name=AXE_ITEM_NAME, code=0x11, classification=ItemClassification.progression)
-    FOREST_CELL = ItemData(item_name=get_cell_item_name(CellType.FOREST_CELL), code=0x12, classification=ItemClassification.progression, amount=-1)
+    FOREST_CELL = ItemData(item_name=get_cell_item_name(CellType.FOREST_CELL), code=0x12, classification=ItemClassification.progression_deprioritized, amount=-1)
     FOREST_KEY = ItemData(item_name=get_region_chest_key_item_name(CellType.FOREST_CELL), code=0x13, classification=ItemClassification.progression)
 
     WELLIES = ItemData(item_name=WELLIES_ITEM_NAME, code=0x21, classification=ItemClassification.progression)
-    BOG_CELL = ItemData(item_name=get_cell_item_name(CellType.BOG_CELL), code=0x22, classification=ItemClassification.progression, amount=-1)
+    BOG_CELL = ItemData(item_name=get_cell_item_name(CellType.BOG_CELL), code=0x22, classification=ItemClassification.progression_deprioritized, amount=-1)
     BOG_KEY = ItemData(item_name=get_region_chest_key_item_name(CellType.BOG_CELL), code=0x23, classification=ItemClassification.progression)
 
     BOAT = ItemData(item_name=BOAT_ITEM_NAME, code=0x31, classification=ItemClassification.progression)
-    OCEAN_CELL = ItemData(item_name=get_cell_item_name(CellType.OCEAN_CELL), code=0x32, classification=ItemClassification.progression, amount=-1)
+    OCEAN_CELL = ItemData(item_name=get_cell_item_name(CellType.OCEAN_CELL), code=0x32, classification=ItemClassification.progression_deprioritized, amount=-1)
     OCEAN_KEY = ItemData(item_name=get_region_chest_key_item_name(CellType.OCEAN_CELL), code=0x33, classification=ItemClassification.progression)
 
     LANTERN = ItemData(item_name=LANTERN_ITEM_NAME, code=0x41, classification=ItemClassification.progression)
-    CAVE_CELL = ItemData(item_name=get_cell_item_name(CellType.CAVE_CELL), code=0x42, classification=ItemClassification.progression, amount=-1)
+    CAVE_CELL = ItemData(item_name=get_cell_item_name(CellType.CAVE_CELL), code=0x42, classification=ItemClassification.progression_deprioritized, amount=-1)
     CAVE_KEY = ItemData(item_name=get_region_chest_key_item_name(CellType.CAVE_CELL), code=0x43, classification=ItemClassification.progression)
 
     LADDER = ItemData(item_name=LADDER_ITEM_NAME, code=0x51, classification=ItemClassification.progression)
-    SKY_CELL = ItemData(item_name=get_cell_item_name(CellType.SKY_CELL), code=0x52, classification=ItemClassification.progression, amount=-1)
+    SKY_CELL = ItemData(item_name=get_cell_item_name(CellType.SKY_CELL), code=0x52, classification=ItemClassification.progression_deprioritized, amount=-1)
     SKY_KEY = ItemData(item_name=get_region_chest_key_item_name(CellType.SKY_CELL), code=0x53, classification=ItemClassification.progression)
     WIND_SHIELD = ItemData(item_name=WIND_SHIELD_ITEM_NAME, code=0x54, classification=ItemClassification.useful)
 
