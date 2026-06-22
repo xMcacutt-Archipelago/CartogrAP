@@ -18,5 +18,3 @@ class CartogrAPWorldBase(World):
 
     def __init__(self, multiworld: MultiWorld, player: int) -> None:
         super().__init__(multiworld=multiworld, player=player)
-        self.plain_cell_count: int = 0
-        self.other_cell_type_count: int = 0

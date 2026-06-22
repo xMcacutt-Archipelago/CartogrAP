@@ -58,7 +58,7 @@ class CartogrAPWorld(CartogrAPWorldBase):
 
 
     def fill_slot_data(self) -> Mapping[str, Any]:
-        self.make_puml()
+        #self.make_puml()
         return \
         {
             "Cell Count": self.options.cell_count.value,

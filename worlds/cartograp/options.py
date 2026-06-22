@@ -11,13 +11,14 @@ class CellCount(Choice):
     """
     How many cells to generate?
     """
+    option_500: ClassVar[int] = 500
+    option_750: ClassVar[int] = 750
     option_1000: ClassVar[int] = 1000
+    option_1250: ClassVar[int] = 1250
     option_1500: ClassVar[int] = 1500
+    option_1750: ClassVar[int] = 1750
     option_2000: ClassVar[int] = 2000
-    # option_3000: ClassVar[int] = 3000
-    # option_4000: ClassVar[int] = 4000
-
-    default: ClassVar[int] = option_1000
+    default: ClassVar[int] = option_750
 
     @staticmethod
     def max_value():

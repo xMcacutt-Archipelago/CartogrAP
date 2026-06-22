@@ -70,7 +70,6 @@ class Fish(enum.Enum):
         return self.get_spawn_chance() <= CHANCE_TO_EXCLUDE_FISH_LOCATION
 
 
-
 def get_region_cell_counts(world: CartogrAPWorldBase | None = None) -> tuple[int, int]:
     max_cell_count: int = CellCount.max_value()
     if world is not None:
