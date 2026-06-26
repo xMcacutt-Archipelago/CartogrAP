@@ -147,4 +147,17 @@ class CartogrAPItems(enum.Enum):
         self.amount: int = item_data.amount
 
 
+    @classmethod
+    def get_unique_cell_items(cls) -> list[Self]:
+        return \
+        [
+            cls.PLAIN_CELL,
+            cls.FOREST_CELL,
+            cls.BOG_CELL,
+            cls.OCEAN_CELL,
+            cls.CAVE_CELL,
+            cls.SKY_CELL,
+        ]
+
+
 
