@@ -149,15 +149,7 @@ class CartogrAPItems(enum.Enum):
 
     @classmethod
     def get_unique_cell_items(cls) -> list[Self]:
-        return \
-        [
-            cls.PLAIN_CELL,
-            cls.FOREST_CELL,
-            cls.BOG_CELL,
-            cls.OCEAN_CELL,
-            cls.CAVE_CELL,
-            cls.SKY_CELL,
-        ]
+        return [cell for cell in cls if cell.item_name.endswith(" Cell")]
 
 
 

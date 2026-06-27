@@ -88,18 +88,20 @@ class CartogrAPWorld(CartogrAPWorldBase):
 
         cell_types: list[CartogrAPItems] = CartogrAPItems.get_unique_cell_items()
 
-        for cell_type in cell_types:
-            self.cell_type_sphere_data[cell_type.code] = {}
+        for cell_type_index, cell_type in enumerate(cell_types):
+            self.cell_type_sphere_data[cell_type_index] = {}
 
             for sphere_index, sphere in enumerate(multidata["spheres"]):
-                self.cell_type_sphere_data[cell_type.code][sphere_index + 1] = []
+                self.cell_type_sphere_data[cell_type_index][sphere_index + 1] = []
                 for sphere_player, loc_list in sphere.items():
                     for loc_id in loc_list:
                         item_id, item_player, item_flags = multidata["locations"][sphere_player][loc_id]
                         if item_player != self.player or item_id != cell_type.code:
                             continue
 
-                        self.cell_type_sphere_data[cell_type.code][sphere_index + 1].append((sphere_player, loc_id))
+                        self.cell_type_sphere_data[cell_type_index][sphere_index + 1].append((sphere_player, loc_id))
+
+        pass
 
 
     def fill_slot_data(self) -> Mapping[str, Any]:
