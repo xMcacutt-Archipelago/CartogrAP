@@ -5,6 +5,7 @@ from typing import ClassVar, override, Mapping, Any
 
 from BaseClasses import MultiWorld, ItemClassification, CollectionState, Region, Item
 from NetUtils import MultiData
+from Options import Option
 from rule_builder.rules import Has
 
 from .constants import GAME_NAME, REGION_CHEST_EVENT_ITEM, REGION_CHESTS_NEEDED_FOR_GOAL
@@ -25,9 +26,17 @@ class CartogrAPWorld(CartogrAPWorldBase):
     item_name_to_id: ClassVar[dict[str, int]] = {item.item_name: item.code for item in CartogrAPItems}
     location_name_to_id: ClassVar[dict[str, int]] = {loc_data.loc_name: loc_data.code for loc_data in FULL_LOCATION_LIST if loc_data.code is not None}
     topology_present: bool = True
+    ut_can_gen_without_yaml: ClassVar[bool] = True
+
+    @staticmethod
+    def interpret_slot_data(slot_data: dict[str, Any]) -> dict[str, Any]:  # pyright: ignore[reportExplicitAny]
+        return slot_data
+
 
     def __init__(self, multiworld: MultiWorld, player: int):
-        super().__init__(multiworld, player)
+        super().__init__(multiworld=multiworld, player=player)
+
+        self.is_ut_gen: bool = False
 
         self.location_list: list[LocationData] = []
         self.items_created_dict: dict[str, int] = {}
@@ -47,7 +56,7 @@ class CartogrAPWorld(CartogrAPWorldBase):
 
 
     def generate_early(self) -> None:
-        # UT Stuff
+        self.handle_ut_gen()
         super().generate_early()
         self.location_list = generate_location_list(world=self)
 
@@ -104,6 +113,16 @@ class CartogrAPWorld(CartogrAPWorldBase):
             "Cell Count": self.options.cell_count.value,
             "Cell Item Sphere Data": self.cell_type_sphere_data
         }
+
+
+    def handle_ut_gen(self) -> None:
+        re_gen_passthrough: dict[str, dict[str, Any]] | None = getattr(self.multiworld, "re_gen_passthrough", {})
+        if not re_gen_passthrough or not self.game in re_gen_passthrough:
+            return
+        self.is_ut_gen = True
+        slot_data: dict[str, Any] = re_gen_passthrough[self.game]  # pyright: ignore[reportExplicitAny]
+        self.options.cell_count.value = slot_data["Cell Count"]
+        self.cell_type_sphere_data = slot_data["Cell Item Sphere Data"]
 
 
     def make_puml(self) -> None:
