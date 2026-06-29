@@ -35,14 +35,12 @@ class CartogrAPWorld(CartogrAPWorldBase):
 
     def __init__(self, multiworld: MultiWorld, player: int):
         super().__init__(multiworld=multiworld, player=player)
-
         self.is_ut_gen: bool = False
 
         self.location_list: list[LocationData] = []
         self.items_created_dict: dict[str, int] = {}
 
-        self.cell_type_sphere_data: dict[int, dict[int, list[tuple[int, int]]]] = {}
-        """dict of cell_item_id to dict of sphere to list of tuple of player and location id"""
+        self.cell_type_sphere_data: dict[int, dict[int, list[dict[str, int]]]] = {}
 
 
     @override
@@ -72,48 +70,30 @@ class CartogrAPWorld(CartogrAPWorldBase):
 
 
     def modify_multidata(self, multidata: MultiData) -> None:
-
-        # sphere
-        # list[dict[int, set[int]]]
-        # list of spheres
-        # dict key is player
-
-        #location_data
-        # dict[int, dict[int, tuple[int, int, int]]]
-        # first int player
-        # second int loc ID
-        # item id, item player, item flags
-
-        # dict of cell_item_id to dict of sphere to list of tuple of player and location id
-
-        cell_types: list[CartogrAPItems] = CartogrAPItems.get_unique_cell_items()
-
-        for cell_type_index, cell_type in enumerate(cell_types):
-            self.cell_type_sphere_data[cell_type_index] = {}
-
-            for sphere_index, sphere in enumerate(multidata["spheres"]):
-                self.cell_type_sphere_data[cell_type_index][sphere_index + 1] = []
-                for sphere_player, loc_list in sphere.items():
-                    for loc_id in loc_list:
-                        item_id, item_player, item_flags = multidata["locations"][sphere_player][loc_id]
-                        if item_player != self.player or item_id != cell_type.code:
+        cell_types = CartogrAPItems.get_unique_cell_items()
+        self.cell_type_sphere_data = {}
+        for sphere_index, sphere in enumerate(multidata["spheres"]):
+            for sphere_player, loc_list in sphere.items():
+                player_data = self.cell_type_sphere_data.setdefault(sphere_player, {})
+                for loc_id in loc_list:
+                    item_id, item_player, _ = multidata["locations"][sphere_player][loc_id]
+                    if item_player != self.player:
+                        continue
+                    for cell_type_index, cell_type in enumerate(cell_types):
+                        if item_id != cell_type.code:
                             continue
-
-                        self.cell_type_sphere_data[cell_type_index][sphere_index + 1].append((sphere_player, loc_id))
-
-        pass
+                        player_data.setdefault(cell_type_index, []).append({
+                            "Sphere": sphere_index + 1,
+                            "Loc": loc_id,
+                        })
+        multidata["slot_data"][self.player]["Cell Item Sphere Data"] = self.cell_type_sphere_data
 
 
     def fill_slot_data(self) -> Mapping[str, Any]:
         #self.make_puml()
-
-        # dict of celltype to dict of sphere to tuple of player and location id
-
-
         return \
         {
             "Cell Count": self.options.cell_count.value,
-            "Cell Item Sphere Data": self.cell_type_sphere_data
         }
 
 
