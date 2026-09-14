@@ -49,6 +49,8 @@ MONEY_ITEM_NAME: str = "Money"
 
 TRAP_ITEM_NAME: str = "Trap Item"
 
+PEP_UPGRADE_ITEM_NAME: str = "Pep"
+
 MENU_REGION: str = "Menu"
 REGION_CHEST_EVENT_ITEM: str = "Region Chest Event Item"
 STARTING_CELLS_REVEALED: int = 25

@@ -134,6 +134,7 @@ class CartogrAPItems(enum.Enum):
 
     TRAP_ITEM = ItemData(item_name=TRAP_ITEM_NAME, code=0x200, classification=ItemClassification.trap)
 
+    PEP_UPGRADE_ITEM = ItemData(item_name=PEP_UPGRADE_ITEM_NAME, code=0x300, classification=ItemClassification.useful)
 
     def __new__(cls, item_data: ItemData) -> Self:
         obj = object.__new__(cls)

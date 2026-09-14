@@ -94,6 +94,7 @@ class CartogrAPWorld(CartogrAPWorldBase):
         return \
         {
             "Cell Count": self.options.cell_count.value,
+            "World Version": f"v{self.world_version.major}.{self.world_version.minor}.{self.world_version.build}",
         }
 
 

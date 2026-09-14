@@ -159,7 +159,6 @@ def generate_locations_for_cell_region(cell_count: int, cell_type: CellType) -> 
 #     return _location_data
 
 
-
 def generate_fish_locations() -> list[LocationData]:
     # loc_name: str
     # code: int | None
